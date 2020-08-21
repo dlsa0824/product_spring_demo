@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<html>
+    <head>
+        <script>
+            $(document).ready(function(){
+                // getproduct function
+                $("#getProduct").click(function(event) {
+                    $.ajax({
+                        url: "http://localhost:8080/products/"+$("#textProductName").val(),
+                        method: "GET",
+                        contentType: "application/json",
+                        data: {
+                            id: $("#textProductName").val()
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            var id = "id: " + data["id"];
+                            var name = "name: " + data["name"];
+                            var price = "price: " + data["price"];
+                            document.getElementById("productTextArea").innerHTML = id + "\n" + name + "\n" + price;
+                        },
+                        error: function(err, status, errorThrown) {
+                            console.log("Data: " + err + "\nStatus: " + status + "\nError: " + errorThrown);
+                            console.log("cannot find product");
+                        }
+                    });
+                    event.preventDefault();
+                });
+                // getproducts function
+                $("#getProducts").click(function(event) {
+
+                    var keyword, orderby, sortrule, pricefrom, priceto;
+                    if($("#keyword_checkbox").is(":checked")){
+                        keyword = $("#keyword_textfield").val();
+                    }
+                    if($("#orderby_checkbox").is(":checked")){
+                        orderby = $("#orderby_textfield").val();
+                    }
+                    if($("#sortrule_checkbox").is(":checked")){
+                        sortrule = $("#sortrule_textfield").val();
+                    }
+                    if($("#pricefrom_checkbox").is(":checked")){
+                        pricefrom = $("#pricefrom_textfield").val();
+                    }
+                    if($("#priceto_checkbox").is(":checked")){
+                        priceto = $("#priceto_textfield").val();
+                    }
+                    
+                    $.ajax({
+                        url: "http://localhost:8080/products",
+                        method: "GET",
+                        contentType: "application/json",
+                        data: {
+                            "keyword": keyword,
+                            "orderBy": orderby,
+                            "sortRule": sortrule,
+                            "priceFrom": pricefrom,
+                            "priceTo": priceto
+			            },
+                        success: function(data) {
+                            console.log(data);
+
+                            var text="";
+                            var id, name, price;
+                            for (i = 0; i < data.length; i++) {
+                                id = "id: " + data[i]["id"];
+                                name = "name: " + data[i]["name"];
+                                price = "price: " + data[i]["price"];
+                                
+                                text = text + id + "\n" + name + "\n" + price + "\n--------------------------\n";
+                            }
+                            document.getElementById("productsTextArea").innerHTML = text;
+                        },
+                        error: function(err, status, errorThrown) {
+                            console.log("Data: " + err + "\nStatus: " + status + "\nError: " + errorThrown);
+                        }
+                    });
+                    event.preventDefault();
+                });
+                // postproduct function
+                $("#postProduct").click(function(event) {
+                    var post_name = $("#post_name_textfield").val();
+                    var post_price = $("#post_price_textfield").val();
+                    var dataJSON = {};
+                    dataJSON["name"] = post_name;
+                    dataJSON["price"] = post_price;
+                    $.ajax({
+                        url: "http://localhost:8080/products",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(dataJSON),
+                        success: function(data) {
+                            console.log(data);
+                            let id = "id: " + data["id"];
+                            let name = "name: " + data["name"];
+                            let price = "price: " + data["price"];
+                            document.getElementById("postTextArea").innerHTML = id + "\n" + name + "\n" + price;
+                        },
+                        error: function(err, status, errorThrown) {
+                            console.log("Data: " + err + "\nStatus: " + status + "\nError: " + errorThrown);
+                        }
+                    });
+                    event.preventDefault();
+                });
+                // putproduct function
+                $("#putProduct").click(function(event) {
+                    var put_name = $("#put_name_textfield").val();
+                    var put_price = $("#put_price_textfield").val();
+                    var dataJSON = {};
+                    dataJSON["name"] = put_name;
+                    dataJSON["price"] = put_price;
+                    $.ajax({
+                        url: "http://localhost:8080/products/"+$("#put_id_textfield").val(),
+                        method: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(dataJSON),
+                        success: function(data) {
+                            console.log(data);
+                            let id = "id: " + data["id"];
+                            let name = "name: " + data["name"];
+                            let price = "price: " + data["price"];
+                            document.getElementById("putTextArea").innerHTML = id + "\n" + name + "\n" + price;
+                        },
+                        error: function(err, status, errorThrown) {
+                            console.log("Data: " + err + "\nStatus: " + status + "\nError: " + errorThrown);
+                        }
+                    });
+                    event.preventDefault();
+                });
+                // deleteproduct function
+                $("#deleteProduct").click(function(event) {
+                    $.ajax({
+                        url: "http://localhost:8080/products/" + $("#deltet_id_textfield").val(),
+                        method: "DELETE",
+                        contentType: "application/json",
+                        data: {
+                            id: $("#textProductName").val()
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            let id = "id: " + data["id"];
+                            let name = "name: " + data["name"];
+                            let price = "price: " + data["price"];
+                            document.getElementById("deleteTextArea").innerHTML = id + "\n" + name + "\n" + price + "\n" + "is deleted";
+                        },
+                        error: function(err, status, errorThrown) {
+                            console.log("Data: " + err + "\nStatus: " + status + "\nError: " + errorThrown);
+                        }
+                    });
+                    event.preventDefault();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div style="font-family: verdana;">
+        <div style="text-align: center;font-size:200%;padding-top:50px;color: darkolivegreen;">Welcom to the library</div>
+        <div style="width: 100%; display: table;padding-top: 10px;">
+            <div style="display: table-row">
+                <!--第一個panel-->
+                <div style="background-color:blanchedalmond;display:table-cell;width: 220px;">
+                    <div>
+                        Book ID: 
+                        <input type="text" id="textProductName" size=25></br>
+                        <button type="submit" id="getProduct" style="margin-top: 15px; padding: 5px 54px;">Get single product</button></br>
+                        <textarea id="productTextArea" style="margin-top: 15px;width: 220px;height: 300px;resize: none;"></textarea>
+                    </div>
+                </div>
+                <!-- 第二個panel -->
+                <div style="background-color:cadetblue;display: table-cell;width: 290px;">
+                    <!-- keyword checkbox -->
+                    <div>
+                        <input type="checkbox" id="keyword_checkbox">
+                        keyword:
+                        <input type="text" id="keyword_textfield">
+                    </div>
+                    <!-- orderby checkbox -->
+                    <div>
+                        <input type="checkbox" id="orderby_checkbox">
+                        orderBy:
+                        <input type="text" id="orderby_textfield" placeholder="name or price">
+                    </div>
+                    <!-- sortrule checkbox -->
+                    <div>
+                        <input type="checkbox" id="sortrule_checkbox">
+                        sortRule:
+                        <input type="text" id="sortrule_textfield" placeholder="asc or desc">
+                    </div>
+                    <!-- pricefrom checkbox-->
+                    <div>
+                        <input type="checkbox" id="pricefrom_checkbox">
+                        priceFrom:
+                        <input type="text" id="pricefrom_textfield">
+                    </div>
+                    <!-- priceto checkbox -->
+                    <div>
+                        <input type="checkbox" id="priceto_checkbox">
+                        priceTo:
+                        <input type="text" id="priceto_textfield">
+                    </div>
+                    <button type="submit" id="getProducts" style="margin-top: 15px;padding: 5px 84px;">Get products</button><br>
+                    <textarea id="productsTextArea" style="margin-top: 15px;width: 280px;height: 300px;resize: none;"></textarea>
+                </div>
+                <!-- 第三個panel -->
+                <div style="width: 250px; display: table-cell;background-color: aquamarine;">
+                    <div>
+                        name: 
+                        <input type="text" id="post_name_textfield" size=15></br>
+                        price:
+                        <input type="text" id="post_price_textfield" size=15></br> 
+                        <button type="submit" id="postProduct" style="margin-top: 15px; padding: 5px 54px;">Update new porduct</button></br>
+                        <textarea id="postTextArea" style="margin-top: 15px;width: 250px;height: 300px;resize: none;"></textarea>
+                    </div>
+                </div>
+                <!-- 第四個panel -->
+                <div style="width: 250px;display: table-cell;background-color: cornflowerblue;">
+                    Id:
+                    <input type="text" id="put_id_textfield" size=25></br>
+                    name:
+                    <input type="text" id="put_name_textfield"></br>
+                    price:
+                    <input type="text" id="put_price_textfield"></br>
+                    <button type="submit" id="putProduct" style="margin-top: 15px; padding: 5px 54px;">change porduct data</button></br>
+                    <textarea id="putTextArea" style="margin-top: 15px;width: 250px;height: 300px;resize: none;"></textarea>
+                </div>
+                <!-- 第五個panel -->
+                <div style="display: table-cell;background-color: blueviolet;">
+                    Book ID: 
+                    <input type="text" id="deltet_id_textfield" size=25></br>
+                    <button type="submit" id="deleteProduct" style="margin-top: 15px; padding: 5px 54px;">Delete product</button></br>
+                    <textarea id="deleteTextArea" style="margin-top: 15px;width: 220px;height: 300px;resize: none;"></textarea>
+                </div>
+            </div>
+        </div>
+                    
+            
+        </div>
+    </body>
+</html>
